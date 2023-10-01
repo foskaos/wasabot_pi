@@ -64,7 +64,7 @@ class MessageDecoder:
 
 print('Creating Serial Connection')
 ser = serial.Serial(
-    '/dev/ttyAMA3',
+    '/dev/ttyAMA0',
     9600,
     parity=serial.PARITY_NONE,
     stopbits=serial.STOPBITS_ONE,
