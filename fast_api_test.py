@@ -28,7 +28,8 @@ async def read_serial_data():
         frame = md.decode(ser.readline())
         if frame:
             print(frame.payload)
-            await data_queue.put({reading.split("=")[0]:float(reading.split("=")[1]) for reading in frame.payload})
+            if frame.message_type == 'sensor':
+                await data_queue.put({reading.split("=")[0]:float(reading.split("=")[1]) for reading in frame.payload})
 
         #print(frame)
 
