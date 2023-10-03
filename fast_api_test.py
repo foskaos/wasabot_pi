@@ -7,6 +7,7 @@ from fastapi import WebSocket
 from fastapi.templating import Jinja2Templates
 import threading
 import serial
+
 data_queue = asyncio.Queue()
 
 print('Creating Serial Connection')
@@ -31,10 +32,6 @@ async def read_serial_data():
             if frame.message_type == 'sensor':
                 await data_queue.put({reading.split("=")[0]:float(reading.split("=")[1]) for reading in frame.payload})
 
-        #print(frame)
-
-        #await data_queue.put(frame)
-
 
 def serial_reader_thread():
     loop = asyncio.new_event_loop()
@@ -48,9 +45,6 @@ serial_thread.start()
 
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
-
-# with open('measurements.json', 'r') as file:
-#     measurements = iter(json.loads(file.read()))
 
 @app.get("/")
 def read_root(request: Request):
