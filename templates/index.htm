@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Real time streaming</title>
+        <script src="https://cdn.jsdelivr.net/npm/d3-array@3"></script>
+        <script src="https://cdn.jsdelivr.net/npm/d3-color@3"></script>
+        <script src="https://cdn.jsdelivr.net/npm/d3-format@3"></script>
+        <script src="https://cdn.jsdelivr.net/npm/d3-interpolate@3"></script>
+        <script src="https://cdn.jsdelivr.net/npm/d3-time@3"></script>
+        <script src="https://cdn.jsdelivr.net/npm/d3-time-format@4"></script>
+        <script src="https://cdn.jsdelivr.net/npm/d3-scale@4"></script>
+        <script src="https://cdn.jsdelivr.net/npm/d3-selection@3"></script>
+        <script src="https://cdn.jsdelivr.net/npm/d3-axis@3"></script>
+        <script src="https://huww98.github.io/TimeChart/dist/timechart.min.js"></script>
+        <style>
+            #chart1 { width: 100%; height: 300px; margin-top: 0px; }
+            #chart2 { width: 100%; height: 300px; margin-top: 0px; }
+            #chart3 { width: 100%; height: 300px; margin-top: 0px; }
+        </style>
+    </head>
+    <body>
+        <div id="chart1"></div>
+        <div id="chart2"></div>
+        <div id="chart3"></div>
+        <script>
+            const el = document.getElementById('chart1');
+            const el2 = document.getElementById('chart2');
+            const el3 = document.getElementById('chart3');
+            const lightdataPoints = [];
+            const tempdataPoints = [];
+            const humdataPoints = [];
+            const chart = new TimeChart(el, {
+                series: [{ data: lightdataPoints, name: 'Light measurement streaming', color: 'darkblue' }],
+                realTime: true,
+                xRange: { min: 0, max: 200 },
+                renderPaddingLeft:45
+            });
+             const chart2 = new TimeChart(el2, {
+                series: [{ data: tempdataPoints, name: 'Temp measurement streaming', color: 'darkblue' }],
+                realTime: true,
+                xRange: { min: 0, max: 200 },
+                renderPaddingLeft:45
+            });
+              const chart3 = new TimeChart(el3, {
+                series: [{ data: humdataPoints, name: 'humidity measurement streaming', color: 'darkblue' }],
+                realTime: true,
+                xRange: { min: 0, max: 200 },
+                renderPaddingLeft:45
+            });
+            const ws = new WebSocket("ws://192.168.2.50:8000/ws");
+            let x = 0;
+            ws.onmessage = function(event) {
+
+                const measurement = JSON.parse(event.data);
+                x += 1
+                console.log(measurement.light)
+                lightdataPoints.push({x, y: measurement.light});
+                tempdataPoints.push({x, y: measurement.temp});
+                humdataPoints.push({x, y: measurement.humidity});
+                chart.update();
+                chart2.update();
+                chart3.update();
+            };
+        </script>
+    </body>
+</html>
