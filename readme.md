@@ -10,12 +10,13 @@ I will log sensor them in a database, and also provide a web ui to display them.
 * Designed a simple serial messaging protocol
 * Implemented a testing environment
 * Set up a raspberry pi pico to send data from a DHT-22 sensor
-
-### Outstanding for Phase 1:
 * Add light sensor
 * Save data in persistent storage (db)
 * Simple webserver to host sensor logs
 * Simple UI to display logs and realtime data
+
+### Outstanding for Phase 1:
+DONE! :sunglasses:
 
 ## Phase 2
 Will set up various thresholds and logic to detect if environmental conditions are suitable, and actuate things to get
