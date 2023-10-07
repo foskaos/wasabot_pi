@@ -24,7 +24,6 @@ ser = serial.Serial(
 )
 
 
-
 async def read_serial_data(con):
     cur = con.cursor()
     print('reading serial data')
