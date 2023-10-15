@@ -14,6 +14,7 @@ I will log sensor them in a database, and also provide a web ui to display them.
 * Save data in persistent storage (db)
 * Simple webserver to host sensor logs
 * Simple UI to display logs and realtime data using "timechart" https://github.com/huww98/TimeChart
+* managed to host the server on public internet
 
 ### Outstanding for Phase 1:
 DONE! :sunglasses:
@@ -30,3 +31,4 @@ things in order
 * Web notifications 
 * Nicer web ui (graphs, responsive etc)
 * Web API
+* enable https
