@@ -47,7 +47,7 @@
                 xRange: { min: 0, max: 200 },
                 renderPaddingLeft:45
             });
-            const ws = new WebSocket("ws://192.168.2.50:8000/ws");
+            const ws = new WebSocket("ws://"+ location.hostname +":8000" + "/ws");
             let x = 0;
             ws.onmessage = function(event) {
 

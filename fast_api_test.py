@@ -64,6 +64,10 @@ templates = Jinja2Templates(directory="templates")
 async def read_root(request: Request):
     return templates.TemplateResponse("index.htm", {"request": request})
 
+@app.get("/testme1")
+async def read_root(request: Request):
+    return templates.TemplateResponse("testml.html",{'request':request})
+
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()

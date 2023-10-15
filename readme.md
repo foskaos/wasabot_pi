@@ -13,7 +13,7 @@ I will log sensor them in a database, and also provide a web ui to display them.
 * Add light sensor
 * Save data in persistent storage (db)
 * Simple webserver to host sensor logs
-* Simple UI to display logs and realtime data
+* Simple UI to display logs and realtime data using "timechart" https://github.com/huww98/TimeChart
 
 ### Outstanding for Phase 1:
 DONE! :sunglasses:
@@ -23,6 +23,7 @@ Will set up various thresholds and logic to detect if environmental conditions a
 things in order
 
 ### Outstanding for Phase 2
+* send messages from pi to pico, acknowledge
 * Water pump
 * Soil moisture sensor
 * Fan
