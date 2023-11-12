@@ -3,12 +3,13 @@ import asyncio
 import sqlite3
 from wasabot_protocol import MessageDecoder
 from fastapi import FastAPI
-from fastapi import Request
+from fastapi import Request,HTTPException
 from fastapi import WebSocket
 from fastapi.templating import Jinja2Templates
 import threading
 import serial
 import datetime
+import random
 
 data_queue = asyncio.Queue()
 
@@ -28,6 +29,8 @@ async def read_serial_data(con):
     cur = con.cursor()
     print('reading serial data')
     while True:
+
+
         md = MessageDecoder()
         frame = md.decode(ser.readline())
         if frame:
@@ -47,6 +50,7 @@ def serial_reader_thread():
     con = sqlite3.connect("tutorial.db")
     cur = con.cursor()
     cur.execute("CREATE TABLE IF NOT EXISTS readings(light, temp, humidity,timestamp)")
+    cur.execute("CREATE TABLE IF NOT EXISTS moisture_readings(sensor_id, value, timestamp)")
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     loop.run_until_complete(read_serial_data(con))
@@ -83,3 +87,49 @@ async def list_items(request: Request):
         return templates.TemplateResponse("sensor_data.html", {"request": request, "items": items})
     finally:
         con.close()
+
+
+@app.get("/send_command")
+def send_water(request: Request):
+
+    print('sending command by serial')
+
+
+    ser.write(b'bb')
+
+
+# Function to insert a batch of readings into the database
+def insert_readings(readings: list):
+    try:
+        with sqlite3.connect('tutorial.db') as conn:
+            cursor = conn.cursor()
+            cursor.executemany(
+                "INSERT INTO moisture_readings (sensor_id, value, timestamp) VALUES (?, ?, ?)",
+                readings
+            )
+            conn.commit()
+    except sqlite3.Error as e:
+        raise e
+
+@app.post("/batch_readings/")
+async def add_batch_readings(request: Request):
+    try:
+        # Parse JSON body of the request
+        data = await request.json()
+
+        # Validate data and prepare for batch insertion
+        readings_to_insert = []
+        for reading in data:
+            sensor_id = reading.get("sensor_id")
+            value = reading.get("value")
+            timestamp = reading.get("timestamp")
+
+            if sensor_id is None or value is None or timestamp is None:
+                raise ValueError("Missing data in one or more readings")
+
+            readings_to_insert.append((sensor_id, value, timestamp))
+
+        insert_readings(readings_to_insert)
+        return {"message": "Batch readings added successfully"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
